@@ -1,0 +1,17 @@
+{
+	"name": "onPrem_files",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "D:\\Dataset",
+			"userId": "desktop-tb9l4iq\\lenovo",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI1MDUyOGY0ZC1hMzZlLTQ3NGQtOTFkMy0zYTU1YmE5NDNhZGQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "adf-SHIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

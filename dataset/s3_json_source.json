@@ -1,0 +1,21 @@
+{
+	"name": "s3_json_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AmazonS3_Json",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AmazonS3Location",
+				"bucketName": "json-bucket-3108",
+				"folderPath": "JsonFolder",
+				"fileName": "US_STATE_recipes.json"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

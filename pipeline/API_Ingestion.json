@@ -1,0 +1,119 @@
+{
+	"name": "API_Ingestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Web1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "GET"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "git_service",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_api_sink",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "https://raw.githubusercontent.com/mdanialn/Adventureworks_ADF_Project/refs/heads/main/Dataset/AdventureWorks_Sales_2017.csv",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"git_files": {
+				"type": "object",
+				"defaultValue": [
+					{
+						"git_file": "datalab_export_2025-04-02 12_53_05.csv"
+					},
+					{
+						"git_file": "e2_leads.csv"
+					},
+					{
+						"git_file": "online_retail_II.xlsx"
+					},
+					{
+						"git_file": "retail_2009.csv"
+					},
+					{
+						"git_file": "sales_orders.csv"
+					},
+					{
+						"git_file": "txn.csv"
+					}
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-08-30T12:02:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

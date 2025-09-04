@@ -1,0 +1,1070 @@
+{
+	"name": "OnPremMigration",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.files",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "OnPremMigration",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "FileServerReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"value": "@if(equals(item().p_file_name,'credit card.csv'),pipeline().parameters.p_mapping_creditcard,if(equals(item().p_file_name,'economic data.csv'),pipeline().parameters.p_mapping_economicdata,if(equals(item().p_file_name,'loan.csv'),pipeline().parameters.p_mapping_loan,if(equals(item().p_file_name,'loan_data_set.csv'),pipeline().parameters.p_mapping_loandataset,if(equals(item().p_file_name,'sales_data_sample.csv'),pipeline().parameters.p_mapping_salesdata,pipeline().parameters.p_mapping_e2Leads)))))",
+									"type": "Expression"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DelimitedText1",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_file_name": {
+											"value": "@item().p_file_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DelimitedText2",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_file_name": {
+											"value": "@item().p_file_name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"files": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"p_file_name": "credit card.csv"
+					},
+					{
+						"p_file_name": "economic data.csv"
+					},
+					{
+						"p_file_name": "loan.csv"
+					},
+					{
+						"p_file_name": "loan_data_set.csv"
+					},
+					{
+						"p_file_name": "sales_data_sample.csv"
+					}
+				]
+			},
+			"p_mapping_creditcard": {
+				"type": "object",
+				"defaultValue": "{             \"type\": \"TabularTranslator\",             \"mappings\": [                 {                     \"source\": {                         \"name\": \"RowNumber\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"RowNumber\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"CustomerId\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"CustomerId\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"Surname\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"Surname\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"CreditScore\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"CreditScore\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"Geography\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"Geography\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"Gender\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"Gender\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"Age\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"Age\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"Tenure\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"Tenure\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"Balance\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"Balance\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"NumOfProducts\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"NumOfProducts\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"IsActiveMember\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"IsActiveMember\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"EstimatedSalary\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"EstimatedSalary\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 },                 {                     \"source\": {                         \"name\": \"Exited\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     },                     \"sink\": {                         \"name\": \"Exited\",                         \"type\": \"String\",                         \"physicalType\": \"String\"                     }                 }             ],             \"typeConversion\": true,             \"typeConversionSettings\": {                 \"allowDataTruncation\": true,                 \"treatBooleanAsNumber\": false             }"
+			},
+			"p_mapping_e2Leads": {
+				"type": "object",
+				"defaultValue": {
+					"type": "TabularTranslator",
+					"mappings": [
+						{
+							"source": {
+								"name": "timestamp",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "timestamp",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "source",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "source",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "URL",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "URL",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "title",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "title",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "snippet",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "snippet",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "matched_keywords",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "matched_keywords",
+								"type": "String",
+								"physicalType": "String"
+							}
+						}
+					],
+					"typeConversion": true,
+					"typeConversionSettings": {
+						"allowDataTruncation": true,
+						"treatBooleanAsNumber": false
+					}
+				}
+			},
+			"p_mapping_economicdata": {
+				"type": "object",
+				"defaultValue": {
+					"type": "TabularTranslator",
+					"mappings": [
+						{
+							"source": {
+								"name": "country",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "country",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "date",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "date",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "manufacturing pmi",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "manufacturing pmi",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "services pmi",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "services pmi",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "consumer confidence",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "consumer confidence",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "interest rates",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "interest rates",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "cpi yoy",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "cpi yoy",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "core cpi",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "core cpi",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "unemployment rate",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "unemployment rate",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "gdp yoy",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "gdp yoy",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "ticker",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "ticker",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "open",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "open",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "high",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "high",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "low",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "low",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "close",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "close",
+								"type": "String",
+								"physicalType": "String"
+							}
+						}
+					],
+					"typeConversion": true,
+					"typeConversionSettings": {
+						"allowDataTruncation": true,
+						"treatBooleanAsNumber": false
+					}
+				}
+			},
+			"p_mapping_loan": {
+				"type": "object",
+				"defaultValue": {
+					"type": "TabularTranslator",
+					"mappings": [
+						{
+							"source": {
+								"name": "Customer_ID",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Customer_ID",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Age",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Age",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Gender",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Gender",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Occupation",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Occupation",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Marital Status",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Marital Status",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Family Size",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Family Size",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Income",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Income",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Expenditure",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Expenditure",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Use Frequency",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Use Frequency",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Loan Category",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Loan Category",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Loan Amount",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Loan Amount",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Overdue",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Overdue",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": " Debt Record",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": " Debt Record",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": " Returned Cheque",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": " Returned Cheque",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": " Dishonour of Bill",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": " Dishonour of Bill",
+								"type": "String",
+								"physicalType": "String"
+							}
+						}
+					],
+					"typeConversion": true,
+					"typeConversionSettings": {
+						"allowDataTruncation": true,
+						"treatBooleanAsNumber": false
+					}
+				}
+			},
+			"p_mapping_loandataset": {
+				"type": "object",
+				"defaultValue": {
+					"type": "TabularTranslator",
+					"mappings": [
+						{
+							"source": {
+								"name": "Loan_ID",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Loan_ID",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Gender",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Gender",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Married",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Married",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Dependents",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Dependents",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Education",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Education",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Self_Employed",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Self_Employed",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "ApplicantIncome",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "ApplicantIncome",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "CoapplicantIncome",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "CoapplicantIncome",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "LoanAmount",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "LoanAmount",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Loan_Amount_Term",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Loan_Amount_Term",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Credit_History",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Credit_History",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Property_Area",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Property_Area",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "Loan_Status",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "Loan_Status",
+								"type": "String",
+								"physicalType": "String"
+							}
+						}
+					],
+					"typeConversion": true,
+					"typeConversionSettings": {
+						"allowDataTruncation": true,
+						"treatBooleanAsNumber": false
+					}
+				}
+			},
+			"p_mapping_salesdata": {
+				"type": "object",
+				"defaultValue": {
+					"type": "TabularTranslator",
+					"mappings": [
+						{
+							"source": {
+								"name": "ORDERNUMBER",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "ORDERNUMBER",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "QUANTITYORDERED",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "QUANTITYORDERED",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "PRICEEACH",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "PRICEEACH",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "ORDERLINENUMBER",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "ORDERLINENUMBER",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "SALES",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "SALES",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "ORDERDATE",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "ORDERDATE",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "STATUS",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "STATUS",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "QTR_ID",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "QTR_ID",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "MONTH_ID",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "MONTH_ID",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "YEAR_ID",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "YEAR_ID",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "PRODUCTLINE",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "PRODUCTLINE",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "MSRP",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "MSRP",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "PRODUCTCODE",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "PRODUCTCODE",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "CUSTOMERNAME",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "CUSTOMERNAME",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "PHONE",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "PHONE",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "ADDRESSLINE1",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "ADDRESSLINE1",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "ADDRESSLINE2",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "ADDRESSLINE2",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "CITY",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "CITY",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "STATE",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "STATE",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "POSTALCODE",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "POSTALCODE",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "COUNTRY",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "COUNTRY",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "TERRITORY",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "TERRITORY",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "CONTACTLASTNAME",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "CONTACTLASTNAME",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "CONTACTFIRSTNAME",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "CONTACTFIRSTNAME",
+								"type": "String",
+								"physicalType": "String"
+							}
+						},
+						{
+							"source": {
+								"name": "DEALSIZE",
+								"type": "String",
+								"physicalType": "String"
+							},
+							"sink": {
+								"name": "DEALSIZE",
+								"type": "String",
+								"physicalType": "String"
+							}
+						}
+					],
+					"typeConversion": true,
+					"typeConversionSettings": {
+						"allowDataTruncation": true,
+						"treatBooleanAsNumber": false
+					}
+				}
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-09-01T07:30:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,306 @@
+{
+	"name": "SilverLayerTransformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_OnPrem_File1",
+						"type": "DatasetReference"
+					},
+					"name": "OnPremFile1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_OnPrem_File2",
+						"type": "DatasetReference"
+					},
+					"name": "OnPremFile2"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_github_file",
+						"type": "DatasetReference"
+					},
+					"name": "GithubFile"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_azureSQL",
+						"type": "DatasetReference"
+					},
+					"name": "AzureSql"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_snowflake",
+						"type": "DatasetReference"
+					},
+					"name": "SnowflakeData"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "DelatLakeSink"
+				},
+				{
+					"linkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "DeltaLakeSink1"
+				},
+				{
+					"linkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "DeltaLakeSink2"
+				},
+				{
+					"linkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "DeltaLakeSink3"
+				},
+				{
+					"linkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					},
+					"name": "DelatLakeSink5"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Upsert"
+				},
+				{
+					"name": "Upsert1"
+				},
+				{
+					"name": "Upsert2"
+				},
+				{
+					"name": "Upsert3"
+				},
+				{
+					"name": "Upsert5"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          RowNumber as short,",
+				"          CustomerId as integer,",
+				"          Surname as string,",
+				"          CreditScore as short,",
+				"          Geography as string,",
+				"          Gender as string,",
+				"          Age as short,",
+				"          Tenure as short,",
+				"          Balance as double,",
+				"          NumOfProducts as short,",
+				"          IsActiveMember as boolean,",
+				"          EstimatedSalary as double,",
+				"          Exited as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> OnPremFile1",
+				"source(output(",
+				"          country as string,",
+				"          date as date,",
+				"          {manufacturing pmi} as double,",
+				"          {services pmi} as double,",
+				"          {consumer confidence} as double,",
+				"          {interest rates} as string,",
+				"          {cpi yoy} as string,",
+				"          {core cpi} as string,",
+				"          {unemployment rate} as string,",
+				"          {gdp yoy} as string,",
+				"          ticker as string,",
+				"          open as double,",
+				"          high as double,",
+				"          low as double,",
+				"          close as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> OnPremFile2",
+				"source(output(",
+				"          OrderDate as date,",
+				"          StockDate as date,",
+				"          OrderNumber as string,",
+				"          ProductKey as short,",
+				"          CustomerKey as short,",
+				"          TerritoryKey as short,",
+				"          OrderLineItem as short,",
+				"          OrderQuantity as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> GithubFile",
+				"source(output(",
+				"          booking_id as integer,",
+				"          passenger_id as integer,",
+				"          flight_id as integer,",
+				"          airline_id as integer,",
+				"          origin_airport_id as integer,",
+				"          destination_airport_id as integer,",
+				"          booking_date as date,",
+				"          ticket_cost as decimal(10,2),",
+				"          flight_duration_mins as integer,",
+				"          checkin_status as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> AzureSql",
+				"source(output(",
+				"          INVOICE_NO as string,",
+				"          STOCK_CODE as string,",
+				"          DESCRIPTION as string,",
+				"          QUANTITY as string,",
+				"          INVOICE_DATE as string,",
+				"          UNIT_PRICE as string,",
+				"          CUSTOMER_ID as string,",
+				"          COUNTRY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> SnowflakeData",
+				"OnPremFile1 alterRow(upsertIf(1==1)) ~> Upsert",
+				"select1 alterRow(upsertIf(1==1)) ~> Upsert1",
+				"GithubFile alterRow(upsertIf(1==1)) ~> Upsert2",
+				"AzureSql alterRow(upsertIf(1==1)) ~> Upsert3",
+				"SnowflakeData alterRow(upsertIf(1==1)) ~> Upsert5",
+				"OnPremFile2 select(mapColumn(",
+				"          country,",
+				"          date,",
+				"          manufacturing_pmi = {manufacturing pmi},",
+				"          services_pmi = {services pmi},",
+				"          consumer_confidence = {consumer confidence},",
+				"          interest_rates = {interest rates},",
+				"          cpi_yoy = {cpi yoy},",
+				"          core_cpi = {core cpi},",
+				"          unemployment_rate = {unemployment rate},",
+				"          gdp_yoy = {gdp yoy},",
+				"          ticker,",
+				"          open,",
+				"          high,",
+				"          low,",
+				"          close",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"Upsert sink(allowSchemaDrift: true,",
+				"     validateSchema: true,",
+				"     format: 'delta',",
+				"     compressionType: 'snappy',",
+				"     compressionLevel: 'Fastest',",
+				"     fileSystem: 'silver',",
+				"     folderPath: 'OnPrem',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: false,",
+				"     updateable: false,",
+				"     upsertable: true,",
+				"     keys:['CustomerId'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> DelatLakeSink",
+				"Upsert1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'silver',",
+				"     folderPath: 'onPrem',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: false,",
+				"     updateable: false,",
+				"     upsertable: true,",
+				"     keys:['manufacturing pmi'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> DeltaLakeSink1",
+				"Upsert2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'silver',",
+				"     folderPath: 'github',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: false,",
+				"     updateable: false,",
+				"     upsertable: true,",
+				"     keys:['ProductKey'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> DeltaLakeSink2",
+				"Upsert3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'silver',",
+				"     folderPath: 'AzureSQL',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: false,",
+				"     updateable: false,",
+				"     upsertable: true,",
+				"     keys:['booking_id'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> DeltaLakeSink3",
+				"Upsert5 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'silver',",
+				"     folderPath: 'Snowflake',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: false,",
+				"     updateable: false,",
+				"     upsertable: true,",
+				"     keys:['INVOICE_NO'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> DelatLakeSink5"
+			]
+		}
+	}
+}

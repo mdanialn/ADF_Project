@@ -1,0 +1,21 @@
+{
+	"name": "AzureSql_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSql_sink",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "azureSQL",
+				"fileSystem": "bronze"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

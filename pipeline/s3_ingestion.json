@@ -1,0 +1,66 @@
+{
+	"name": "s3_ingestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "S3Migration",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AmazonS3ReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "Blob_service",
+							"type": "LinkedServiceReference"
+						},
+						"path": "staginglayer",
+						"enableCompression": true
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "s3_json_source",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "s3_sink",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-08-31T16:27:01Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

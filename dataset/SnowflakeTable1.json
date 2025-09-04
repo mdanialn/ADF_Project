@@ -1,0 +1,66 @@
+{
+	"name": "SnowflakeTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Snowflake1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "INVOICE_NO",
+				"type": "VARCHAR",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "STOCK_CODE",
+				"type": "VARCHAR",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "DESCRIPTION",
+				"type": "VARCHAR",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "QUANTITY",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "INVOICE_DATE",
+				"type": "TIMESTAMP_NTZ",
+				"precision": 0,
+				"scale": 9
+			},
+			{
+				"name": "UNIT_PRICE",
+				"type": "NUMBER",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "CUSTOMER_ID",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "COUNTRY",
+				"type": "VARCHAR",
+				"precision": 0,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "CRM",
+			"table": "RETAIL_2009"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

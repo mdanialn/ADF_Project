@@ -1,0 +1,9 @@
+{
+	"name": "adf-job-project-0827",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "df7d3a65-b86b-4236-8cc7-dd25fd6f3693",
+		"tenantId": "ae7f1ec7-d489-48a5-956b-855b8c3b4712"
+	}
+}
